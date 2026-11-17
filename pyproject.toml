@@ -1,0 +1,12 @@
+[project]
+name = "fastapi-moduler-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.20.1",
+    "fastapi[standard]>=0.163.1",
+    "pymysql>=1.2.4",
+    "sqlmodel>=0.0.50",
+]
