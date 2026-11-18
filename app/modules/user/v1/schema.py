@@ -1,5 +1,13 @@
 from sqlmodel import SQLModel
+from pydantic import EmailStr
 from datetime import datetime
+
+
+class UserCreateRequest(SQLModel):
+    first_name: str
+    last_name: str | None
+    email: EmailStr
+    password: str
 
 
 class UserResponse(SQLModel):
