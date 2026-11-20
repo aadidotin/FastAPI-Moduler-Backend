@@ -1,6 +1,9 @@
-def main():
-    print("Hello from fastapi-moduler-backend!")
+from fastapi import FastAPI
 
+from app.routers.v1 import router as v1_router
 
-if __name__ == "__main__":
-    main()
+app = FastAPI(
+    title="FastAPI backend", description="FastAPI Moduler Backend Development"
+)
+
+app.include_router(v1_router, prefix="/api/v1")
