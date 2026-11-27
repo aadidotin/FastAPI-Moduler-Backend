@@ -13,7 +13,7 @@ DATABASE_URL = URL.create(
 )
 
 engine = create_engine(
-    DATABASE_URL, echo=settings.DEBUGS, pool_pre_ping=True, pool_use_lifo=True
+    DATABASE_URL, echo=settings.DEBUG, pool_pre_ping=True, pool_use_lifo=True
 )
 
 

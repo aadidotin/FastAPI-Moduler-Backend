@@ -1,11 +1,12 @@
 from pwdlib import PasswordHash
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timezone, timedelta
 from uuid import uuid4
 
 import jwt
 import hashlib
 
 from app.core.config import settings
+from app.exceptions.custom import AppException
 
 password_hash = PasswordHash.recommended()
 
@@ -21,7 +22,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def _create_token(
     user_id: int, token_type: str, secret_key: str, expires_delta: timedelta
 ) -> str:
-    now = datetime.now(UTC)
+    now = datetime.now(timezone.utc)
 
     payload = {
         "sub": str(user_id),
@@ -57,17 +58,22 @@ def create_refresh_token(user_id: int) -> str:
 
 
 def _decode_token(token: str, token_type: str, secret_key: str) -> dict:
-    payload = jwt.decode(token, secret_key, algorithms=[settings.JWT_ALGORITHM])
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[settings.JWT_ALGORITHM])
 
-    if payload.get("type") != token_type:
-        raise jwt.InvalidTokenError("Invalid token type")
+        if payload.get("type") != token_type:
+            raise jwt.InvalidTokenError("Invalid token type")
 
-    subject = payload.get("sub")
+        subject = payload.get("sub")
 
-    if not isinstance(subject, str) or not subject.isdigit():
-        raise jwt.InvalidTokenError("Invalid token subject")
+        if not isinstance(subject, str) or not subject.isdigit():
+            raise jwt.InvalidTokenError("Invalid token subject")
 
-    return payload
+        return payload
+    except jwt.InvalidSignatureError:
+        raise AppException(message="Invalid token", status_code=401)
+    except jwt.ExpiredSignatureError:
+        raise AppException(message="Token has expired", status_code=401)
 
 
 def decode_access_token(token: str) -> dict:
