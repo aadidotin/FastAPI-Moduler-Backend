@@ -14,4 +14,4 @@ async def upload(
     service: MediaService = Depends(get_media_service),
     current_user: User = Depends(get_current_user),
 ):
-    pass
+    return service.upload_multiple(files=files, user=current_user)

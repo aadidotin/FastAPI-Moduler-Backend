@@ -21,4 +21,4 @@ class User(SQLModel, table=True):
         sa_column_kwargs={"onupdate": lambda: datetime.now(timezone.utc)},
     )
 
-    media: list["Media"] = Relationship(back_populates="users")
+    media: list["Media"] = Relationship(back_populates="user")
